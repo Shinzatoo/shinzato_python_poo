@@ -1,58 +1,73 @@
-class Carro:
-    modelo : str
-    marca : str
-    cor : str
-    odometro : 0.0
-    motor_on : False
-    tanque : float
-    consumo_medio : float
+from frota import *
+def simular_carro(carro : Carro):
+    print('1- Ligar motor')
+    print('2- Desligar motor')
+    print('3- Acelerar')
 
-    def __init__(self, modelo : str, marca : str, cor : str,
-                       odometro : float, motor : bool,
-                       tanque: float,consumo_medio: float):
-        self.modelo = modelo
-        self.marca = marca
-        self.cor = cor
-        self.odometro = odometro
-        self.motor_on = motor
-        self.tanque = tanque
-        self.consumo_medio =consumo_medio
+    op = 0
+    while op not in (1, 2, 3):
+        op = int(input("Digite as opcoes[1-3]: "))
 
-    def ligar(self):
-            if not self.motor_on and self.tanque >0:
-                self.motor_on = True
+    if op == 1:
+        carro.ligar()
+    elif op == 2:
+        carro.desligar()
+    elif op == 3:
+        v = float(input("Informe a velocidade: "))
+        t = float(input("Informe o tempo: "))
+        carro.acelerar(v, t)
+
+    print('Infos atuais do carro')
+    print(carro1)
+    print(carro2)
+
+if __name__ == "__main__":
+    print('Cadastre um carro1')
+    nm_modelo = input('Digite o modelo: ')
+    nm_marca = input('Digite a marca: ')
+    nm_cor = input('Digite a cor: ')
+    litros = float(input("digite o nivel do get_tanque()?: "))
+    cm_medio = float(input("digite quanto o carro gasta: "))
+
+    carro1 = Carro(nm_modelo, nm_marca, nm_cor,0, False,litros,cm_medio)
+
+    print('Cadastre um carro2')
+    nm_modelo = input('Digite o modelo: ')
+    nm_marca = input('Digite a marca: ')
+    nm_cor = input('Digite a cor: ')
+    litros = float(input("digite o nivel do get_tanque()?: "))
+    cm_medio = float(input("digite quanto o carro gasta?: "))
+
+    carro2 = Carro(nm_modelo, nm_marca, nm_cor, 0, False,litros,cm_medio)
+
+    '''
+    Controlando o 2 carros até ele atingir 300 Km
+    '''
+    while carro1.get_odometro() < 300 and carro2.get_odometro() < 300 and (carro1.get_tanque() >0 or carro2.get_tanque() >0):
+        try:
+            op_carro = 0
+            while op_carro not in (1,2):
+                op_carro = int(input("qual carro simular 1 ou 2?: "))
+
+            if op_carro == 1:
+                simular_carro(carro1)
             else:
-                raise Exception("Erro: Motor já ligado!, ou sem combustivel")
+                simular_carro(carro2)
+        except Exception as e:
+            print("ERRO!")
+            print(e)
 
-    def acelerar(self, velocidade : float, tempo : float):
-        if self.motor_on:
-            km = velocidade *tempo
-            litros = km / self.consumo_medio
-            if self.tanque >litros:
-                self.tanque -= litros
-                self.odometro += km
-            else:
-                self.odometro =+ self.tanque *self. consumo_medio
-                self.tanque = 0
-                self. motor_on = False
+    try:
+        carro1.desligar()
+        carro2.desligar()
+    except Exception as e:
+        print(e)
 
-        else:
-            raise Exception("Erro: Não é possível acelerar! Motor desligado!")
 
-    def desligar(self):
-        if self.motor_on:
-            self.motor_on = False
-        else:
-            raise Exception("Erro: Motor já desligado!")
-
-    def __str__(self):
-        info = (f'Carro {self.modelo}, marca {self.marca}, '
-                f'cor {self.cor}\n{self.odometro} Km, '
-                f'motor {self.motor_on}\n'
-                f'consumo{self.consumo_medio} Km/L '
-                f'nivel do tanque {self.tanque} L')
-        return info
-
+    if carro1.get_odometro() > carro2.get_odometro():
+        print(carro1)
+    else:
+        print(carro2)
 
 
 
